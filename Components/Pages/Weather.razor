@@ -21,7 +21,7 @@
             <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="NewItemAsync">Add New Item</MudButton>
         </ToolBarContent>
         <Columns>
-            <PropertyColumn Property="@( (ElementModel x) => x.Number )" Title="Nr" Editable="false" />
+            <PropertyColumn Property="@( (ElementModel x) => x.Id )" Title="Id" Editable="false" />
             <PropertyColumn Property="@( (ElementModel x) => x.Sign )" Title="Sign" />
             <PropertyColumn Property="@( (ElementModel x) => x.Name )" Title="Name" />
             <PropertyColumn Property="@( (ElementModel x) => x.Position )" Title="Position">
@@ -131,10 +131,10 @@
             // fallback to previous behavior
             var list = new List<ElementModel>
             {
-                new ElementModel { Number = 1, Sign = "H", Name = "Hydrogen", Position = 1, Molar = 1.008 },
-                new ElementModel { Number = 2, Sign = "He", Name = "Helium", Position = 18, Molar = 4.0026 },
-                new ElementModel { Number = 3, Sign = "Li", Name = "Lithium", Position = 1, Molar = 6.94 },
-                new ElementModel { Number = 4, Sign = "Be", Name = "Beryllium", Position = 2, Molar = 9.0122 }
+                new ElementModel { Id = 1, Sign = "H", Name = "Hydrogen", Position = 1, Molar = 1.008 },
+                new ElementModel { Id = 2, Sign = "He", Name = "Helium", Position = 18, Molar = 4.0026 },
+                new ElementModel { Id = 3, Sign = "Li", Name = "Lithium", Position = 1, Molar = 6.94 },
+                new ElementModel { Id = 4, Sign = "Be", Name = "Beryllium", Position = 2, Molar = 9.0122 }
             };
             _elements = list.Take(pageSize).ToList();
             _total = list.Count;
@@ -187,16 +187,48 @@
         _events.Insert(0, $"CanceledEditingItem: {System.Text.Json.JsonSerializer.Serialize(item)}");
     }
 
-    private void CommittedItemChanges(ElementModel item)
+    private async Task CommittedItemChanges(ElementModel item)
     {
-        // handle new item numbering
-        if (item.Number == 0)
+        try
         {
-            var max = _elementMasterList.Any() ? _elementMasterList.Max(x => x.Number) : 0;
-            var maxLocal = _elements.Any() ? _elements.Max(x => x.Number) : 0;
-            item.Number = Math.Max(max, maxLocal) + 1;
+            var resp = await httpClient.PutAsJsonAsync("webapi/periodictable", item);
+            if (resp.IsSuccessStatusCode)
+            {
+                var saved = await resp.Content.ReadFromJsonAsync<ElementModel>();
+                if (saved != null)
+                {
+                    // update local list entry (replace by Id)
+                    var idx = _elements.FindIndex(x => x.Id == saved.Id);
+                    if (idx >= 0)
+                    {
+                        _elements[idx] = saved;
+                    }
+                    else
+                    {
+                        // if item was new and server assigned an id, find and update the instance
+                        var localIdx = _elements.FindIndex(x => ReferenceEquals(x, item));
+                        if (localIdx >= 0)
+                            _elements[localIdx] = saved;
+                    }
+
+                    _events.Insert(0, $"Saved: {System.Text.Json.JsonSerializer.Serialize(saved)}");
+                }
+                else
+                {
+                    _events.Insert(0, $"Saved but no content returned.");
+                }
+            }
+            else
+            {
+                var error = await resp.Content.ReadAsStringAsync();
+                _events.Insert(0, $"Save failed: {(int)resp.StatusCode} {resp.ReasonPhrase} - {error}");
+            }
+        }
+        catch (Exception ex)
+        {
+            _events.Insert(0, $"Save exception: {ex.Message}");
         }
 
-        _events.Insert(0, $"CommittedItemChanges: {System.Text.Json.JsonSerializer.Serialize(item)}");
+        StateHasChanged();
     }
 }
