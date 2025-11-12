@@ -1,0 +1,86 @@
+[
+  {
+    "Id": 1,
+    "Sign": "H",
+    "Name": "Hydrffsfffffffffffffffffogen",
+    "Position": 1,
+    "Molar": 1.008
+  },
+  {
+    "Id": 2,
+    "Sign": "He",
+    "Name": "SaiHelium",
+    "Position": 18,
+    "Molar": 4.0026
+  },
+  {
+    "Id": 3,
+    "Sign": "Li",
+    "Name": "Lithium",
+    "Position": 1,
+    "Molar": 6.94
+  },
+  {
+    "Id": 4,
+    "Sign": "Be",
+    "Name": "Beryllium",
+    "Position": 2,
+    "Molar": 9.0122
+  },
+  {
+    "Id": 5,
+    "Sign": "B",
+    "Name": "Boron",
+    "Position": 13,
+    "Molar": 10.81
+  },
+  {
+    "Id": 6,
+    "Sign": "C",
+    "Name": "Carbon",
+    "Position": 14,
+    "Molar": 12.011
+  },
+  {
+    "Id": 7,
+    "Sign": "N",
+    "Name": "Nitrogen",
+    "Position": 15,
+    "Molar": 14.007
+  },
+  {
+    "Id": 8,
+    "Sign": "O",
+    "Name": "Oxygen",
+    "Position": 16,
+    "Molar": 15.999
+  },
+  {
+    "Id": 9,
+    "Sign": "F",
+    "Name": "Fluorine",
+    "Position": 17,
+    "Molar": 18.998
+  },
+  {
+    "Id": 10,
+    "Sign": "Ne",
+    "Name": "Neon",
+    "Position": 18,
+    "Molar": 20.18
+  },
+  {
+    "Id": 15,
+    "Sign": "H",
+    "Name": "uday",
+    "Position": 1,
+    "Molar": 1.008
+  },
+  {
+    "Id": 16,
+    "Sign": "H",
+    "Name": "uday",
+    "Position": 1,
+    "Molar": 1.008
+  }
+]

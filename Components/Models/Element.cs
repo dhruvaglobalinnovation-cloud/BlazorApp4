@@ -2,7 +2,7 @@ namespace BlazorApp4.Components.Models
 {
     public class Element
     {
-        public int Number { get; set; }
+        public int Id { get; set; }
         public string? Sign { get; set; }
         public string? Name { get; set; }
         public int Position { get; set; }
